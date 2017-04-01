@@ -3,7 +3,7 @@ function love.load()
   love.graphics.setDefaultFilter("nearest", "nearest")
   players = {{x = 16, y = 16, rgb = getColor(), s = 1}}
   npcs = {{x = 32, y = 32, rgb = getColor(), s = 1}}
-  monsters = {{x = 48, y = 48, rgb = getColor(), s = 3, name = "Burt", init = 0, hp = 20, atk = {2, 20}, tags = "Dragon", info = "n/a"}}
+  monsters = {{x = 48, y = 48, rgb = getColor(), s = 3, name = "Burt", init = 0, hp = 20, atk = {2, 20}, tags = "Dragon", info = "n/a"}, {x = 128, y = 128, rgb = getColor(), s = 1}}
   objects = {players, npcs, monsters}
   w, h = love.graphics.getDimensions()
   dXV = 0
@@ -207,9 +207,38 @@ function love.mousepressed(x, y, button)
       onMouse = true
     end
   elseif button == 1 and onMouse == true then
-    onMouse = false
-    objects[selected.type][selected.num].x = math.floor(((x - w / 2) / sX - objects[selected.type][selected.num].s * 16 / 2 + 8) / 16) * 16 + w / 2 - dX
-    objects[selected.type][selected.num].y = math.floor(((y - h / 2) / sY - objects[selected.type][selected.num].s * 16 / 2 + 8) / 16) * 16 + h / 2 - dY
+
+    local collision = false
+    local oX = math.floor(((x - w / 2) / sX - objects[selected.type][selected.num].s * 16 / 2 + 8) / 16) * 16 + w / 2 - dX
+    local oY = math.floor(((y - h / 2) / sY - objects[selected.type][selected.num].s * 16 / 2 + 8) / 16) * 16 + h / 2 - dY
+    local oS = objects[selected.type][selected.num].s
+    for i, v in ipairs(players) do
+      if oX < v.x + v.s * 16 and oX + oS * 16 > v.x and oY < v.y + v.s * 16 and oY + oS * 16 > v.y  and (selected.type ~= 1 or selected.num ~= i) then
+        collision = true
+        break
+      end
+    end
+    if collision == false then
+      for i, v in ipairs(npcs) do
+        if oX < v.x + v.s * 16 and oX + oS * 16 > v.x and oY < v.y + v.s * 16 and oY + oS * 16 > v.y and (selected.type ~= 2 or selected.num ~= i) then
+          collision = true
+          break
+        end
+      end
+    end
+    if collision == false then
+      for i, v in ipairs(monsters) do
+        if oX < v.x + v.s * 16 and oX + oS * 16 > v.x and oY < v.y + v.s * 16 and oY + oS * 16 > v.y and (selected.type ~= 3 or selected.num ~= i) then
+          collision = true
+          break
+        end
+      end
+    end
+    if collision == false then
+      onMouse = false
+      objects[selected.type][selected.num].x = oX
+      objects[selected.type][selected.num].y = oY
+    end
   end
 end
 
