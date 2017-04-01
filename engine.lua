@@ -77,27 +77,27 @@ function engine_draw()
   love.graphics.setLineWidth(sX)
 
   for i, v in ipairs(players) do
-    if selected == nil or selected.type ~= "player" or i ~= selected.num or onMouse ~= true then
+    if selected == nil or selected.type ~= 1 or i ~= selected.num or onMouse ~= true then
       love.graphics.setColor(v.rgb[1], v.rgb[2], v.rgb[3])
       love.graphics.rectangle("fill", warp("x", v.x), warp("y", v.y), (16 * v.s) * sX, (16 * v.s) * sY)
     end
   end
 
   for i, v in ipairs(npcs) do
-    if selected == nil or selected.type ~= "npc" or i ~= selected.num or onMouse ~= true then
+    if selected == nil or selected.type ~= 2 or i ~= selected.num or onMouse ~= true then
       love.graphics.setColor(v.rgb[1], v.rgb[2], v.rgb[3])
       love.graphics.circle("fill", warp("x", v.x + 8 * v.s), warp("y", v.y + 8 * v.s), (8 * v.s) * sX, 16 * v.s + 2 * sX)
     end
   end
 
   for i, v in ipairs(monsters) do
-    if selected == nil or selected.type ~= "monster" or i ~= selected.num or onMouse ~= true then
+    if selected == nil or selected.type ~= 3 or i ~= selected.num or onMouse ~= true then
       love.graphics.setColor(v.rgb[1], v.rgb[2], v.rgb[3])
       love.graphics.polygon("fill", warp("x", v.x), warp("y", v.y + 16 * v.s), warp("x", v.x + 8 * v.s), warp("y", v.y), warp("x", v.x + 16 * v.s), warp("y", v.y + 16 * v.s))
     end
   end
 
-  if selected ~= nil then
+  if selected ~= nil and selected.new == nil then
     if selected.type == 1 then
       local v = players[selected.num]
       love.graphics.setColor(255, 255, 255)
@@ -211,6 +211,9 @@ function engine_mousepressed(x, y, button)
       onMouse = false
       objects[selected.type][selected.num].x = oX
       objects[selected.type][selected.num].y = oY
+      if selected.new ~= nil then
+        selected.new = nil
+      end
     end
   end
 end
@@ -229,6 +232,8 @@ function engine_keypressed(key)
     end
     sX = 1
     sY = 1
+  elseif key == "escape" and selected ~= nil then
+    selected = nil
   end
 end
 
