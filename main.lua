@@ -3,7 +3,8 @@ function love.load()
   love.graphics.setDefaultFilter("nearest", "nearest")
   players = {{x = 16, y = 16, rgb = getColor(), s = 1}}
   npcs = {{x = 32, y = 32, rgb = getColor(), s = 1}}
-  monsters = {{x = 48, y = 48, rgb = getColor(), s = 3, name = "Burt", init = 0, hp = 20, atk = {2, 20}}}
+  monsters = {{x = 48, y = 48, rgb = getColor(), s = 3, name = "Burt", init = 0, hp = 20, atk = {2, 20}, tags = "Dragon", info = "n/a"}}
+  objects = {players, npcs, monsters}
   w, h = love.graphics.getDimensions()
   dXV = 0
   dYV = 0
@@ -103,11 +104,11 @@ function love.draw()
   end
 
   if selected ~= nil then
-    if selected.type == "player" then
+    if selected.type == 1 then
       local v = players[selected.num]
       love.graphics.setColor(255, 255, 255)
       love.graphics.rectangle("line", warp("x", v.x), warp("y", v.y), (16 * v.s) * sX, (16 * v.s) * sY)
-    elseif selected.type == "npc" then
+    elseif selected.type == 2 then
       local v = npcs[selected.num]
       love.graphics.setColor(255, 255, 255)
       love.graphics.circle("line", warp("x", v.x + 8 * v.s), warp("y", v.y + 8 * v.s), (8 * v.s) * sX, 16 * v.s + 2 * sX)
@@ -119,11 +120,11 @@ function love.draw()
   end
 
   if onMouse == true then
-    if selected.type == "player" then
+    if selected.type == 1 then
       local v = players[selected.num]
       love.graphics.setColor(v.rgb[1], v.rgb[2], v.rgb[3])
       love.graphics.rectangle("fill", love.mouse.getX() - (8 * v.s) * sX, love.mouse.getY() - (8 * v.s) * sX, (16 * v.s) * sX, (16 * v.s) * sY)
-    elseif selected.type == "npc" then
+    elseif selected.type == 2 then
       local v = npcs[selected.num]
       love.graphics.setColor(125, 55, 55, 125)
       love.graphics.rectangle("fill", love.mouse.getX() - (8 * v.s) * sX, love.mouse.getY() - (8 * v.s) * sX, (16 * v.s) * sX, (16 * v.s) * sY)
@@ -138,8 +139,19 @@ function love.draw()
     end
   end
 
-
-  love.graphics.print(tostring(onMouse))
+  if selected ~= nil then
+    if objects[selected.type][selected.num].name ~= nil and objects[selected.type][selected.num].tags ~= nil then
+      love.graphics.print(objects[selected.type][selected.num].name.." ("..objects[selected.type][selected.num].tags..")")
+    elseif objects[selected.type][selected.num].name ~= nil then
+      love.graphics.print(objects[selected.type][selected.num].name)
+    end
+    if objects[selected.type][selected.num].hp ~= nil then
+      love.graphics.print(objects[selected.type][selected.num].hp, 0, 14)
+    end
+    if objects[selected.type][selected.num].atk ~= nil then
+      love.graphics.print(tostring(objects[selected.type][selected.num].atk[1]).."d"..tostring(objects[selected.type][selected.num].atk[2]), 0, 28)
+    end
+  end
 end
 
 function love.wheelmoved( x, y )
@@ -164,7 +176,7 @@ function love.mousepressed(x, y, button)
     local targetFound = false
     for i, v in ipairs(players) do
       if objectCollide(x, y, v.x, v.y, v.s) then
-        selected = {type = "player", num = i}
+        selected = {type = 1, num = i}
         targetFound = true
         break
       end
@@ -172,7 +184,7 @@ function love.mousepressed(x, y, button)
     if targetFound == false then
       for i, v in ipairs(npcs) do
         if objectCollide(x, y, v.x, v.y, v.s) then
-          selected = {type = "npc", num = i}
+          selected = {type = 2, num = i}
           targetFound = true
           break
         end
@@ -181,7 +193,7 @@ function love.mousepressed(x, y, button)
     if targetFound == false then
       for i, v in ipairs(monsters) do
         if objectCollide(x, y, v.x, v.y, v.s) then
-          selected = {type = "monster", num = i}
+          selected = {type = 3, num = i}
           targetFound = true
           break
         end
@@ -191,31 +203,13 @@ function love.mousepressed(x, y, button)
       selected = nil
     end
   elseif button == 2 and selected ~= nil and onMouse == false then
-    if selected.type == "player" then
-      if objectCollide(x, y, players[selected.num].x, players[selected.num].y, players[selected.num].s) then
-        onMouse = true
-      end
-    elseif selected.type == "npc" then
-      if objectCollide(x, y, npcs[selected.num].x, npcs[selected.num].y, npcs[selected.num].s) then
-        onMouse = true
-      end
-    else
-      if objectCollide(x, y, monsters[selected.num].x, monsters[selected.num].y, monsters[selected.num].s) then
-        onMouse = true
-      end
+    if objectCollide(x, y, objects[selected.type][selected.num].x, objects[selected.type][selected.num].y, objects[selected.type][selected.num].s) then
+      onMouse = true
     end
   elseif button == 1 and onMouse == true then
     onMouse = false
-    if selected.type == "player" then
-      players[selected.num].x = math.floor(((x - w / 2) / sX - players[selected.num].s * 16 / 2 + 8) / 16) * 16 + w / 2 - dX
-      players[selected.num].y = math.floor(((y - h / 2) / sY - players[selected.num].s * 16 / 2 + 8) / 16) * 16 + h / 2 - dY
-    elseif selected.type == "npc" then
-      npcs[selected.num].x = math.floor(((x - w / 2) / sX - npcs[selected.num].s * 16 / 2 + 8) / 16) * 16 + w / 2 - dX
-      npcs[selected.num].y = math.floor(((y - h / 2) / sY - npcs[selected.num].s * 16 / 2 + 8) / 16) * 16 + h / 2 - dY
-    else
-      monsters[selected.num].x = math.floor(((x - w / 2) / sX - monsters[selected.num].s * 16 / 2 + 8) / 16) * 16 + w / 2 - dX
-      monsters[selected.num].y = math.floor(((y - h / 2) / sY - monsters[selected.num].s * 16 / 2 + 8) / 16) * 16 + h / 2 - dY
-    end
+    objects[selected.type][selected.num].x = math.floor(((x - w / 2) / sX - objects[selected.type][selected.num].s * 16 / 2 + 8) / 16) * 16 + w / 2 - dX
+    objects[selected.type][selected.num].y = math.floor(((y - h / 2) / sY - objects[selected.type][selected.num].s * 16 / 2 + 8) / 16) * 16 + h / 2 - dY
   end
 end
 
