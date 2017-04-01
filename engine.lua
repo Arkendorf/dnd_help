@@ -1,3 +1,19 @@
+function engine_load()
+  dXV = 0
+  dYV = 0
+  sX = 1
+  sY = 1
+  sXV = 0
+  sYV = 0
+  boardW = 320
+  boardH = 320
+  dX = w / 2 - boardW / 2
+  dY = h / 2 - boardH / 2
+  mX = 1
+  mY = 1
+  onMouse = false
+end
+
 function engine_update(dt)
   if love.keyboard.isDown("w") then
     if love.keyboard.isDown("lctrl") then
