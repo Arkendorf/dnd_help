@@ -15,32 +15,34 @@ function engine_load()
 end
 
 function engine_update(dt)
-  if love.keyboard.isDown("w") then
-    if love.keyboard.isDown("lctrl") then
-      dYV = dYV + 4
-    else
-      dYV = dYV + 1
+  if textBox == "" then
+    if love.keyboard.isDown("w") then
+      if love.keyboard.isDown("lctrl") then
+        dYV = dYV + 4
+      else
+        dYV = dYV + 1
+      end
     end
-  end
-  if love.keyboard.isDown("s") then
-    if love.keyboard.isDown("lctrl") then
-      dYV = dYV - 4
-    else
-      dYV = dYV - 1
+    if love.keyboard.isDown("s") then
+      if love.keyboard.isDown("lctrl") then
+        dYV = dYV - 4
+      else
+        dYV = dYV - 1
+      end
     end
-  end
-  if love.keyboard.isDown("a") then
-    if love.keyboard.isDown("lctrl") then
-      dXV = dXV + 4
-    else
-      dXV = dXV + 1
+    if love.keyboard.isDown("a") then
+      if love.keyboard.isDown("lctrl") then
+        dXV = dXV + 4
+      else
+        dXV = dXV + 1
+      end
     end
-  end
-  if love.keyboard.isDown("d") then
-    if love.keyboard.isDown("lctrl") then
-      dXV = dXV - 4
-    else
-      dXV = dXV - 1
+    if love.keyboard.isDown("d") then
+      if love.keyboard.isDown("lctrl") then
+        dXV = dXV - 4
+      else
+        dXV = dXV - 1
+      end
     end
   end
   dX = dX + dXV
@@ -174,6 +176,7 @@ function engine_mousepressed(x, y, button)
     end
     if targetFound == false then
       selected = nil
+      textBox = ""
     end
   elseif button == 2 and selected ~= nil and onMouse == false then
     if objectCollide(x, y, objects[selected.type][selected.num].x, objects[selected.type][selected.num].y, objects[selected.type][selected.num].s) then
@@ -219,7 +222,7 @@ function engine_mousepressed(x, y, button)
 end
 
 function engine_keypressed(key)
-  if key == "space" and selected ~= nil then
+  if key == "space" and selected ~= nil and textBox == "" then
     if selected.type == 1 then
       dX = w / 2 - players[selected.num].x - (players[selected.num].s * 16) / 2
       dY = h / 2 - players[selected.num].y - (players[selected.num].s * 16) / 2
@@ -234,6 +237,7 @@ function engine_keypressed(key)
     sY = 1
   elseif key == "escape" and selected ~= nil then
     selected = nil
+    textBox = ""
   end
 end
 
