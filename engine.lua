@@ -258,8 +258,8 @@ function objectCollide(x2, y2, x, y, s)
 end
 
 function getColor()
-  r = (math.random(255) + 255) / 2
-  g = (math.random(255) + 255) / 2
-  b = (math.random(255) + 255) / 2
+  r = math.floor((math.random(255) + 255) / 2)
+  g = math.floor((math.random(255) + 255) / 2)
+  b = math.floor((math.random(255) + 255) / 2)
   return {r, g, b}
 end

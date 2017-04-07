@@ -22,7 +22,7 @@ function overlay_draw()
     love.graphics.setColor(155, 155, 155)
     love.graphics.rectangle("fill", 6, 6, sidebarSize - 12, nameBoxSize)
     love.graphics.setColor(55, 55, 55)
-    love.graphics.printf(objects[selected.type][selected.num].name, 8, 6, sidebarSize - 16, "left")
+    love.graphics.printf(focus.name, 8, 6, sidebarSize - 16, "left")
     if textBox == "name" then
       love.graphics.rectangle("line", 6, 6, sidebarSize - 12, nameBoxSize)
     end
@@ -31,26 +31,42 @@ function overlay_draw()
     love.graphics.setColor(155, 155, 155)
     love.graphics.rectangle("fill", 6, 12 + nameBoxSize, sidebarSize - 12, tagsBoxSize)
     love.graphics.setColor(55, 55, 55)
-    love.graphics.printf(objects[selected.type][selected.num].tags, 8, 12 + nameBoxSize, sidebarSize - 16, "left")
+    love.graphics.printf(focus.tags, 8, 12 + nameBoxSize, sidebarSize - 16, "left")
     if textBox == "tags" then
       love.graphics.rectangle("line", 6, 12 + nameBoxSize, sidebarSize - 12, tagsBoxSize)
     end
 
+    --draw stats
+    drawStatBubble(sidebarSize / 2 - sidebarSize / 4 - 6, 18 + nameBoxSize + tagsBoxSize + sidebarSize / 8, sidebarSize / 8, sidebarSize / 8, focus.ac, false, "AC")
+    drawStatBubble(sidebarSize / 2, 18 + nameBoxSize + tagsBoxSize + sidebarSize / 8, sidebarSize / 8, sidebarSize / 8, focus.hp, false, "HP")
+    drawStatBubble(sidebarSize / 2 + sidebarSize / 4 + 6, 18 + nameBoxSize + tagsBoxSize + sidebarSize / 8, sidebarSize / 8, sidebarSize / 8, focus.init, false, "Init")
+    drawStatBubble(sidebarSize / 2 - sidebarSize / 4 - 6, 24 + nameBoxSize + tagsBoxSize + (sidebarSize / 8) * 3, sidebarSize / 8, sidebarSize / 8, focus.stats.str, true, "STR")
+    drawStatBubble(sidebarSize / 2, 24 + nameBoxSize + tagsBoxSize + (sidebarSize / 8) * 3, sidebarSize / 8, sidebarSize / 8, focus.stats.dex, true, "DEX")
+    drawStatBubble(sidebarSize / 2 + sidebarSize / 4 + 6, 24 + nameBoxSize + tagsBoxSize + (sidebarSize / 8) * 3, sidebarSize / 8, sidebarSize / 8, focus.stats.con, true, "CON")
+    drawStatBubble(sidebarSize / 2 - sidebarSize / 4 - 6, 30 + nameBoxSize + tagsBoxSize + (sidebarSize / 8) * 5, sidebarSize / 8, sidebarSize / 8, focus.stats.int, true, "INT")
+    drawStatBubble(sidebarSize / 2, 30 + nameBoxSize + tagsBoxSize + (sidebarSize / 8) * 5, sidebarSize / 8, sidebarSize / 8, focus.stats.wis, true, "WIS")
+    drawStatBubble(sidebarSize / 2 + sidebarSize / 4 + 6, 30 + nameBoxSize + tagsBoxSize + (sidebarSize / 8) * 5, sidebarSize / 8, sidebarSize / 8, focus.stats.cha, true, "CHA")
+
     -- draw info
     love.graphics.setColor(155, 155, 155)
-    love.graphics.rectangle("fill", 6, 18 + nameBoxSize + tagsBoxSize, sidebarSize - 12, infoBoxSize)
+    love.graphics.rectangle("fill", 6, 36 + nameBoxSize + tagsBoxSize + (sidebarSize / 8) * 6, sidebarSize - 12, infoBoxSize)
     love.graphics.setColor(55, 55, 55)
-    love.graphics.printf(objects[selected.type][selected.num].info, 8, 18 + nameBoxSize + tagsBoxSize, sidebarSize - 16, "left")
+    love.graphics.printf(focus.info, 8, 36 + nameBoxSize + tagsBoxSize + (sidebarSize / 8) * 6, sidebarSize - 16, "left")
     if textBox == "info" then
-      love.graphics.rectangle("line", 6, 18 + nameBoxSize + tagsBoxSize, sidebarSize - 12, infoBoxSize)
+      love.graphics.rectangle("line", 6, 36 + nameBoxSize + tagsBoxSize + (sidebarSize / 8) * 6, sidebarSize - 12, infoBoxSize)
     end
 
-    -- if objects[selected.type][selected.num].hp ~= nil then
-    --   love.graphics.print(objects[selected.type][selected.num].hp, 0, 14)
-    -- end
-    -- if objects[selected.type][selected.num].atk ~= nil then
-    --   love.graphics.print(tostring(objects[selected.type][selected.num].atk[1]).."d"..tostring(objects[selected.type][selected.num].atk[2]), 0, 28)
-    -- end
+    -- draw color
+    love.graphics.setColor(focus.rgb[1], focus.rgb[2], focus.rgb[3])
+    love.graphics.rectangle("fill", 6, 42 + nameBoxSize + tagsBoxSize + (sidebarSize / 8) * 6 + infoBoxSize, sidebarSize / 3 - 8, 20)
+    love.graphics.rectangle("fill", 13 + sidebarSize / 3 - 9, 42 + nameBoxSize + tagsBoxSize + (sidebarSize / 8) * 6 + infoBoxSize, sidebarSize / 3 - 8, 20)
+    love.graphics.rectangle("fill", 20 + (sidebarSize / 3 - 9) * 2, 42 + nameBoxSize + tagsBoxSize + (sidebarSize / 8) * 6 + infoBoxSize, sidebarSize / 3 - 8, 20)
+    love.graphics.setColor(55, 55, 55)
+    love.graphics.printf(tostring(focus.rgb[1]), 6, 42 + nameBoxSize + tagsBoxSize + (sidebarSize / 8) * 6 + infoBoxSize + 3, sidebarSize / 3 - 8, "center")
+    love.graphics.printf(tostring(focus.rgb[2]), 13 + sidebarSize / 3 - 9, 42 + nameBoxSize + tagsBoxSize + (sidebarSize / 8) * 6 + infoBoxSize + 3, sidebarSize / 3 - 8, "center")
+    love.graphics.printf(tostring(focus.rgb[3]), 20 + (sidebarSize / 3 - 9) * 2, 42 + nameBoxSize + tagsBoxSize + (sidebarSize / 8) * 6 + infoBoxSize + 3, sidebarSize / 3 - 8, "center")
+
+
     love.graphics.setCanvas()
   end
   love.graphics.setColor(255, 255, 255)
@@ -65,21 +81,24 @@ function overlay_draw()
 end
 
 function overlay_update(dt)
+  if selected ~= nil then
+    focus = objects[selected.type][selected.num]
+  end
   if selected ~= nil and sidebarPos < sidebarSize then
     sidebarPos = sidebarPos + (sidebarSize - sidebarPos) / 4
-  elseif selected == nill and sidebarPos > 0 then
+  elseif selected == nil and sidebarPos > 0 then
     sidebarPos = sidebarPos - (sidebarPos) / 4
   end
   if selected ~= nil then
-    nameBoxSize = getWrapSize(objects[selected.type][selected.num].name, sidebarSize - 16)
+    nameBoxSize = getWrapSize(focus.name, sidebarSize - 16)
     if nameBoxSize < 14 then
       nameBoxSize = 14
     end
-    tagsBoxSize = getWrapSize(objects[selected.type][selected.num].tags, sidebarSize - 16)
+    tagsBoxSize = getWrapSize(focus.tags, sidebarSize - 16)
     if tagsBoxSize < 14 then
       tagsBoxSize = 14
     end
-    infoBoxSize = getWrapSize(objects[selected.type][selected.num].info, sidebarSize - 16)
+    infoBoxSize = getWrapSize(focus.info, sidebarSize - 16)
     if infoBoxSize < 28 then
       infoBoxSize = 28
     end
@@ -89,23 +108,41 @@ end
 function overlay_mousepressed(x, y, button)
   -- adding buttons
   if button == 1 and x >= sidebarSize / 24 and x <= sidebarSize / 3.45 and y >= h - sidebarSize / 3.45 and y <= h - sidebarSize / 24 then
-    players[#players + 1] = {x = 0, y = 0, rgb = {getColor()}, s = 1, name = "", tags = "", info = ""}
+    players[#players + 1] = {x = 0, y = 0, rgb = getColor(), s = 1, name = "", tags = "", info = "", hp = 10, ac = 10, init = 1, stats = {str = 10, dex = 10, con = 10, int = 10, wis = 10, cha = 10}}
     selected = {type = 1, num = #players, new = true}
     onMouse = true
   elseif button == 1 and x >= sidebarSize / 2.67 and x <= sidebarSize / 1.6 and y >= h - sidebarSize / 3.45 and y <= h - sidebarSize / 24 then
-    npcs[#npcs + 1] = {x = 0, y = 0, rgb = {getColor()}, s = 1, name = "", tags = "", info = ""}
+    npcs[#npcs + 1] = {x = 0, y = 0, rgb = getColor(), s = 1, name = "", tags = "", info = "", hp = 10, ac = 10, init = 1, stats = {str = 10, dex = 10, con = 10, int = 10, wis = 10, cha = 10}}
     selected = {type = 2, num = #npcs, new = true}
     onMouse = true
   elseif button == 1 and x >= sidebarSize / 1.41 and x <= sidebarSize / 1.046 and y >= h - sidebarSize / 3.45 and y <= h - sidebarSize / 24 then
-    monsters[#monsters + 1] = {x = 0, y = 0, rgb = {getColor()}, s = 1, name = "", tags = "", info = ""}
+    monsters[#monsters + 1] = {x = 0, y = 0, rgb = getColor(), s = 1, name = "", tags = "", info = "", hp = 10, ac = 10, init = 1, stats = {str = 10, dex = 10, con = 10, int = 10, wis = 10, cha = 10}}
     selected = {type = 3, num = #monsters, new = true}
     onMouse = true
   elseif selected ~= nil and button == 1 and x >= 6 and x <= sidebarSize - 12 and y >= 6 and y <= 6 + nameBoxSize then
     textBox = "name"
   elseif selected ~= nil and button == 1 and x >= 6 and x <= sidebarSize - 12 and y >= 12 + nameBoxSize and y <= 12 + nameBoxSize + tagsBoxSize then
     textBox = "tags"
-  elseif selected ~= nil and button == 1 and x >= 6 and x <= sidebarSize - 12 and y >= 18 + nameBoxSize + tagsBoxSize and y <= 18 + nameBoxSize + tagsBoxSize + infoBoxSize then
+  elseif selected ~= nil and button == 1 and x >= 6 and x <= sidebarSize - 12 and y >= 36 + nameBoxSize + tagsBoxSize + (sidebarSize / 8) * 6 and y <= 36 + nameBoxSize + tagsBoxSize + (sidebarSize / 8) * 6 + infoBoxSize then
     textBox = "info"
+  elseif selected ~= nil and button == 1 and x >= sidebarSize / 2 - sidebarSize / 4 - 6 - sidebarSize / 8 and x <= sidebarSize / 2 - sidebarSize / 4 - 6 + sidebarSize / 8 and y >= 18 + nameBoxSize + tagsBoxSize and y <= 18 + nameBoxSize + tagsBoxSize + (sidebarSize / 8) * 2 then
+    textBox = "AC"
+  elseif selected ~= nil and button == 1 and x >= sidebarSize / 2 - sidebarSize / 8 and x <= sidebarSize / 2 + sidebarSize / 8 and y >= 18 + nameBoxSize + tagsBoxSize and y <= 18 + nameBoxSize + tagsBoxSize + (sidebarSize / 8) * 2 then
+    textBox = "HP"
+  elseif selected ~= nil and button == 1 and x >= sidebarSize / 2 + sidebarSize / 4 + 6 - sidebarSize / 8 and x <= sidebarSize / 2 + sidebarSize / 4 + 6 + sidebarSize / 8 and y >= 18 + nameBoxSize + tagsBoxSize and y <= 18 + nameBoxSize + tagsBoxSize + (sidebarSize / 8) * 2 then
+    textBox = "Init"
+  elseif selected ~= nil and button == 1 and x >= sidebarSize / 2 - sidebarSize / 4 - 6 - sidebarSize / 8 and x <= sidebarSize / 2 - sidebarSize / 4 - 6 + sidebarSize / 8 and y >= 24 + nameBoxSize + tagsBoxSize + (sidebarSize / 8) * 2 and y <= 24 + nameBoxSize + tagsBoxSize + (sidebarSize / 8) * 4 then
+    textBox = "STR"
+  elseif selected ~= nil and button == 1 and x >= sidebarSize / 2 - sidebarSize / 8 and x <= sidebarSize / 2 + sidebarSize / 8 and y >= 24 + nameBoxSize + tagsBoxSize + (sidebarSize / 8) * 2 and y <= 24 + nameBoxSize + tagsBoxSize + (sidebarSize / 8) * 4 then
+    textBox = "DEX"
+  elseif selected ~= nil and button == 1 and x >= sidebarSize / 2 + sidebarSize / 4 + 6 - sidebarSize / 8 and x <= sidebarSize / 2 + sidebarSize / 4 + 6 + sidebarSize / 8 and y >= 24 + nameBoxSize + tagsBoxSize + (sidebarSize / 8) * 2 and y <= 24 + nameBoxSize + tagsBoxSize + (sidebarSize / 8) * 4 then
+    textBox = "CON"
+  elseif selected ~= nil and button == 1 and x >= sidebarSize / 2 - sidebarSize / 4 - 6 - sidebarSize / 8 and x <= sidebarSize / 2 - sidebarSize / 4 - 6 + sidebarSize / 8 and y >= 30 + nameBoxSize + tagsBoxSize + (sidebarSize / 8) * 4 and y <= 30 + nameBoxSize + tagsBoxSize + (sidebarSize / 8) * 6 then
+    textBox = "INT"
+  elseif selected ~= nil and button == 1 and x >= sidebarSize / 2 - sidebarSize / 8 and x <= sidebarSize / 2 + sidebarSize / 8 and y >= 30 + nameBoxSize + tagsBoxSize + (sidebarSize / 8) * 4 and y <= 30 + nameBoxSize + tagsBoxSize + (sidebarSize / 8) * 6 then
+    textBox = "WIS"
+  elseif selected ~= nil and button == 1 and x >= sidebarSize / 2 + sidebarSize / 4 + 6 - sidebarSize / 8 and x <= sidebarSize / 2 + sidebarSize / 4 + 6 + sidebarSize / 8 and y >= 30 + nameBoxSize + tagsBoxSize + (sidebarSize / 8) * 4 and y <= 30 + nameBoxSize + tagsBoxSize + (sidebarSize / 8) * 6 then
+    textBox = "CHA"
   else
     textBox = ""
   end
@@ -117,22 +154,110 @@ function overlay_keypressed(key)
     textBox = ""
   elseif key == "backspace" and textBox ~= "" then
     if textBox == "name" then
-      objects[selected.type][selected.num].name = string.sub(objects[selected.type][selected.num].name, 1, -2)
+      focus.name = string.sub(focus.name, 1, -2)
     elseif textBox == "tags" then
-      objects[selected.type][selected.num].tags = string.sub(objects[selected.type][selected.num].tags, 1, -2)
+      focus.tags = string.sub(focus.tags, 1, -2)
     elseif textBox == "info" then
-      objects[selected.type][selected.num].info = string.sub(objects[selected.type][selected.num].info, 1, -2)
+      focus.info = string.sub(focus.info, 1, -2)
+    elseif selected ~= nil and textBox == "AC" and focus.ac > 9 then
+      focus.ac = tonumber(string.sub(tostring(focus.ac), 1, -2))
+    elseif selected ~= nil and textBox == "AC" and focus.ac < 10 then
+      focus.ac = 0
+    elseif selected ~= nil and textBox == "HP" and focus.hp > 9 then
+      focus.hp = tonumber(string.sub(tostring(focus.hp), 1, -2))
+    elseif selected ~= nil and textBox == "HP" and focus.hp < 10 then
+      focus.hp = 0
+    elseif selected ~= nil and textBox == "Init" and focus.init > 9 then
+      focus.init = tonumber(string.sub(tostring(focus.init), 1, -2))
+    elseif selected ~= nil and textBox == "Init" and focus.init < 10 then
+      focus.init = 0
+    elseif selected ~= nil and textBox == "STR" and focus.stats.str > 9 then
+      focus.stats.str = tonumber(string.sub(tostring(focus.stats.str), 1, -2))
+    elseif selected ~= nil and textBox == "STR" and focus.stats.str < 10 then
+      focus.stats.str = 0
+    elseif selected ~= nil and textBox == "DEX" and focus.stats.dex > 9 then
+      focus.stats.dex = tonumber(string.sub(tostring(focus.stats.dex), 1, -2))
+    elseif selected ~= nil and textBox == "DEX" and focus.stats.dex < 10 then
+      focus.stats.dex = 0
+    elseif selected ~= nil and textBox == "CON" and focus.stats.con > 9 then
+      focus.stats.con = tonumber(string.sub(tostring(focus.stats.con), 1, -2))
+    elseif selected ~= nil and textBox == "CON" and focus.stats.con < 10 then
+      focus.stats.con = 0
+    elseif selected ~= nil and textBox == "WIS" and focus.stats.wis > 9 then
+      focus.stats.wis = tonumber(string.sub(tostring(focus.stats.wis), 1, -2))
+    elseif selected ~= nil and textBox == "WIS" and focus.stats.wis < 10 then
+      focus.stats.wis = 0
+    elseif selected ~= nil and textBox == "INT" and focus.stats.int > 9 then
+      focus.stats.int = tonumber(string.sub(tostring(focus.stats.int), 1, -2))
+    elseif selected ~= nil and textBox == "INT" and focus.stats.int < 10 then
+      focus.stats.int = 0
+    elseif selected ~= nil and textBox == "CHA" and focus.stats.cha > 9 then
+      focus.stats.cha = tonumber(string.sub(tostring(focus.stats.cha), 1, -2))
+    elseif selected ~= nil and textBox == "CHA" and focus.stats.cha < 10 then
+      focus.stats.cha = 0
     end
     love.keyboard.setKeyRepeat(true)
   end
 end
 
 function overlay_textinput(text)
+  number = tonumber(text)
   if selected ~= nil and textBox == "name" then
-    objects[selected.type][selected.num].name = objects[selected.type][selected.num].name .. text
+    focus.name = focus.name .. text
   elseif selected ~= nil and textBox == "tags" then
-    objects[selected.type][selected.num].tags = objects[selected.type][selected.num].tags .. text
+    focus.tags = focus.tags .. text
   elseif selected ~= nil and textBox == "info" then
-    objects[selected.type][selected.num].info = objects[selected.type][selected.num].info .. text
+    focus.info = focus.info .. text
+  elseif selected ~= nil and textBox == "AC" and focus.ac < 100 and number then
+    focus.ac = tonumber(tostring(focus.ac .. text))
+  elseif selected ~= nil and textBox == "HP" and focus.hp < 100 and number then
+    focus.hp = tonumber(tostring(focus.hp .. text))
+  elseif selected ~= nil and textBox == "Init" and focus.init < 100 and number then
+    focus.init = tonumber(tostring(focus.init .. text))
+  elseif selected ~= nil and textBox == "STR" and focus.stats.str < 1000 and number then
+    focus.stats.str = tonumber(tostring(focus.stats.str .. text))
+  elseif selected ~= nil and textBox == "DEX" and focus.stats.dex < 1000 and number then
+    focus.stats.dex = tonumber(tostring(focus.stats.dex .. text))
+  elseif selected ~= nil and textBox == "CON" and focus.stats.con < 1000 and number then
+    focus.stats.con = tonumber(tostring(focus.stats.con .. text))
+  elseif selected ~= nil and textBox == "WIS" and focus.stats.wis < 1000 and number then
+    focus.stats.wis = tonumber(tostring(focus.stats.wis .. text))
+  elseif selected ~= nil and textBox == "INT" and focus.stats.int < 1000 and number then
+    focus.stats.int = tonumber(tostring(focus.stats.int .. text))
+  elseif selected ~= nil and textBox == "CHA" and focus.stats.cha < 1000 and number then
+    focus.stats.cha = tonumber(tostring(focus.stats.cha .. text))
+  end
+end
+
+function drawStatBubble(x, y, r, l, stat, showModifier, txt)
+  if textBox == tostring(txt) then
+    love.graphics.setColor(55, 55, 55)
+  else
+    love.graphics.setColor(155, 155, 155)
+  end
+  love.graphics.circle("line", x, y, r, l)
+  love.graphics.setColor(55, 55, 55)
+  love.graphics.setFont(font)
+  love.graphics.printf(tostring(txt), x - r, math.floor(y - 6 - r * 0.53), r * 2 , "center")
+  love.graphics.setFont(bigFont)
+  if showModifier == true then
+    if stat <= 2009 then
+      modifier = tostring(math.floor((stat - 10) / 2))
+    else
+      modifier = "999"
+    end
+    if string.len(modifier) > 2 then
+      love.graphics.printf(modifier, x - r, y - 10, r * 2 , "center")
+    else
+      love.graphics.printf("+"..modifier, x - r, y - 10, r * 2 , "center")
+    end
+    love.graphics.setFont(font)
+    love.graphics.printf(tostring(stat), x - r, math.ceil(y - 6 + r * 0.53), r * 2 , "center")
+  else
+    if stat < 1000 then
+      love.graphics.printf(tostring(stat), x - r, y - 10, r * 2 , "center")
+    else
+      love.graphics.printf("999", x - r, y - 10, r * 2 , "center")
+    end
   end
 end
